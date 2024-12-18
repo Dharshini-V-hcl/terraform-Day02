@@ -19,6 +19,7 @@ variable "instance_type" {
 variable "subnet_id" {
   description = "Subnet ID for the EC2 instance"
   type        = string
+  default  = "subnet-095bdf9165f52bf0c"
 }
 
 variable "key_name" {
@@ -36,4 +37,5 @@ variable "instance_name" {
 variable "vpc_id" {
   description = "ID of the VPC"
   type        = string
+  default = "vpc-09c3818abda1800b8"
 }
