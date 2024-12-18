@@ -25,7 +25,8 @@ jobs:
  
       - name: Initialize Terraform
         working-directory: ./modules/vpc
-        run: terraform init \
+        run: |
+         terraform init \
           -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
           -backend-config="key=vpc/terraform.tfstate" \
           -backend-config="region=${{ secrets.TF_REGION }}" \
@@ -61,11 +62,13 @@ jobs:
  
       - name: Initialize Terraform
         working-directory: ./modules/ec2
-        run: terraform init \
+        run: |
+         terraform init \
           -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
           -backend-config="key=ec2/terraform.tfstate" \
           -backend-config="region=${{ secrets.TF_REGION }}" \
           -backend-config="dynamodb_table=${{ secrets.TF_DYNAMODB_TABLE }}"
+
       - name: Terraform Plan
         working-directory: ./modules/ec2
         run: terraform plan 
