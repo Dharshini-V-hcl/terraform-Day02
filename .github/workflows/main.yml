@@ -1,0 +1,82 @@
+name: Terraform Deployment
+ 
+on:
+  push:
+    branches:
+      - main  
+ 
+env:
+  TF_BUCKET: ${{ secrets.TF_BUCKET }}
+  TF_REGION: ${{ secrets.TF_REGION }}
+  TF_DYNAMODB_TABLE: ${{ secrets.TF_DYNAMODB_TABLE }}
+ 
+jobs:
+  deploy-vpc:
+    name: Deploy VPC Module
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+ 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+ 
+      - name: Initialize Terraform
+        working-directory: terraform-Day02/modules/vpc
+        run: terraform init \
+          -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
+          -backend-config="key=vpc/terraform.tfstate" \
+          -backend-config="region=${{ secrets.TF_REGION }}" \
+          -backend-config="dynamodb_table=${{ secrets.TF_DYNAMODB_TABLE }}"
+
+      - name: Terraform Plan
+        working-directory: terraform-Day02/modules/vpc
+        run: terraform plan -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        
+ 
+      - name: Apply Terraform
+        working-directory: terraform-Day02/modules/vpc
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ 
+  deploy-ec2:
+    name: Deploy EC2 Module
+    needs: deploy-vpc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+ 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+ 
+      - name: Initialize Terraform
+        working-directory: terraform-Day02/modules/ec2
+        run: terraform init \
+          -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
+          -backend-config="key=ec2/terraform.tfstate" \
+          -backend-config="region=${{ secrets.TF_REGION }}" \
+          -backend-config="dynamodb_table=${{ secrets.TF_DYNAMODB_TABLE }}"
+
+      - name: Terraform Plan
+        working-directory: terraform-Day02/modules/ec2
+        run: terraform plan -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ 
+      - name: Apply Terraform
+        working-directory: terraform-Day02/modules/ec2
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
