@@ -6,7 +6,10 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "ami_id" {}
+variable "ami_id" {
+type = string 
+default = "ami-01816d07b1128cd2d"
+}
 
 
 
