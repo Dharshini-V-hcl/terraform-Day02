@@ -9,8 +9,11 @@ variable "vpc_name" {
 }
 
 variable "cidr_block" {
-  description = "CIDR block for the VPC"
-  type        = string
+  default = "10.0.0.0/16"
+}
+
+variable "vpc_cidr" {
+  default = "10.0.0.0/16"
 }
 
 variable "enable_dns_support" {
@@ -33,6 +36,7 @@ variable "public_subnet_cidrs" {
 variable "private_subnet_cidrs" {
   description = "CIDR blocks for the private subnets"
   type        = list(string)
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]  # Example default values
 }
 
 variable "availability_zones" {
