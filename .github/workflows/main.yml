@@ -37,7 +37,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./modules/vpc
-        run: terraform plan -var="cidr_block=10.0.0.0/16"
+        run: terraform plan -lock=false -var="cidr_block=10.0.0.0/16"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
