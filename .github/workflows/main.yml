@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: Terraform Module
  
 on:
   push:
@@ -26,10 +26,10 @@ jobs:
       - name: Initialize Terraform
         working-directory: ./terraform-Day02/modules/vpc
         run: terraform init \
-          -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
+          -backend-config="bucket=<TF_BUCKET>" \
           -backend-config="key=vpc/terraform.tfstate" \
-          -backend-config="region=${{ secrets.TF_REGION }}" \
-          -backend-config="dynamodb_table=${{ secrets.TF_DYNAMODB_TABLE }}"
+          -backend-config="region=<TF_REGION>" \
+          -backend-config="dynamodb_table=<TF_DYNAMODB_TABLE>"
 
       - name: Terraform Plan
         working-directory: ./terraform-Day02/modules/vpc
@@ -62,14 +62,13 @@ jobs:
       - name: Initialize Terraform
         working-directory: ./terraform-Day02/modules/ec2
         run: terraform init \
-          -backend-config="bucket=${{ secrets.TF_BUCKET }}" \
+           -backend-config="bucket=<TF_BUCKET>" \
           -backend-config="key=ec2/terraform.tfstate" \
-          -backend-config="region=${{ secrets.TF_REGION }}" \
-          -backend-config="dynamodb_table=${{ secrets.TF_DYNAMODB_TABLE }}"
-
+          -backend-config="region=<TF_REGION>" \
+          -backend-config="dynamodb_table=<TF_DYNAMODB_TABLE>"
       - name: Terraform Plan
         working-directory: ./terraform-Day02/modules/ec2
-        run: terraform plan -auto-approve
+        run: terraform plan 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
